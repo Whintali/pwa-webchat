@@ -2,7 +2,7 @@
 
 ## Présentation
 
-Ceci est un projet NextJS servant à introniserl'utilisation du framework tout en le déployant en PWA
+Ceci est un projet NextJS servant à introniser l'utilisation du framework NextJS tout en le déployant en PWA
 
 ## Technologies Utilisées
 
@@ -15,7 +15,7 @@ Ceci est un projet NextJS servant à introniserl'utilisation du framework tout e
 
 ## Installation
 
-Veuillez tout d'abord installez via npm nextJS, react :
+Veuillez tout d'abord initialiser un projet via npx :
 
     npx create-next-app@latest
 
@@ -34,5 +34,4 @@ Veuillez tout d'abord installez via npm nextJS, react :
 ### Back
 
     ...
-
-
+    
