@@ -19,7 +19,7 @@ export default function AccountPage() {
         if(!name || !inputRef.current) return
         inputRef.current.value = name
     },[name])
-    const handleClick = (e) => {
+    const handleClick = () => {
         setName(inputRef.current?.value || "");
         localStorage.setItem("name", inputRef.current?.value || "");
         Swal.fire({
