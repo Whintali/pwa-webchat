@@ -5,14 +5,16 @@ import Swal from "sweetalert2";
 export default function GalleryComponent(props:Props) {
     const type = props.type
     const [images,setImages] = useState<string[]>([]);
-    props.functionManager.reloadImages = () => {
-        const photosNotConverted = window.localStorage.getItem(type);
-        setImages([]);
-        setImages(prev => [ ...prev,...(photosNotConverted ? JSON.parse(photosNotConverted) : [])]);       
+    if(props.functionManager) {
+        props.functionManager.reloadImages = () => {
+            const photosNotConverted = window.localStorage.getItem(type? type : "");
+            setImages([]);
+            setImages(prev => [ ...prev,...(photosNotConverted ? JSON.parse(photosNotConverted) : [])]);       
+        }
     }
-    let onClick = (index) => {console.log(index)}
+    let onClick = (index:number) => {console.log(index)}
     useEffect(()=>{         
-            const photosNotConverted = window.localStorage.getItem(type);
+            const photosNotConverted = window.localStorage.getItem(type? type : "");
             setImages(prev => [ ...prev,...(photosNotConverted ? JSON.parse(photosNotConverted) : [])]);   
     },[])
     switch(type){
@@ -31,7 +33,7 @@ export default function GalleryComponent(props:Props) {
         default : {}
     }
     const clearImages = () => {
-            window.localStorage.removeItem(type);   
+            window.localStorage.removeItem(type? type : "");   
             Swal.fire({
                 icon: 'success',
                 title: 'Images supprimées !',
@@ -39,7 +41,7 @@ export default function GalleryComponent(props:Props) {
                 showConfirmButton: true,
                 timer: 1500
             })
-            props.functionManager.reloadImages();
+            props.functionManager?.reloadImages?.();
             if(type === "photos"){
                 window.localStorage.removeItem("PersonnalImage");
             }

@@ -10,11 +10,11 @@ export default function DiscussionPage(){
     },{
         name: "Room 2",
     }])
-    const [selectedRoom,setSelectedRoom] = useState({});
+    const [selectedRoom,setSelectedRoom] = useState({name:""});
     useEffect(()=>{}
     ,[])
     useEffect(()=>{
-        if(JSON.stringify(selectedRoom) === "{}" || !selectedRoom.name) return
+        if(JSON.stringify(selectedRoom) === "{name:\"\"}" || !selectedRoom.name) return
         router.push(`/discussion/${selectedRoom.name.toLowerCase().replace(" ","-")}`);
     },[selectedRoom])
     

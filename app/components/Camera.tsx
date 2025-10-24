@@ -21,7 +21,7 @@ export default function CameraComponent(props:Props) {
                         icon: 'success',
                         confirmButtonText: 'OK'
                     });
-                    props.functionManager.reloadImages();
+                    props.functionManager?.reloadImages?.();
                     console.log("Photo prise et ajoutée !");
                 }                
             }
