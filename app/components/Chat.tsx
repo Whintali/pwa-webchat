@@ -1,7 +1,7 @@
 'use client';
 import { useState } from "react";
 
-export default function ChatComponent(props){
+export default function ChatComponent(props:Props){
     
     const [room,setRoom] = useState({
         name: "Room 1",
