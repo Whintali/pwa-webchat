@@ -1,5 +1,5 @@
 'use client'
-import { use, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Swal from "sweetalert2";
 import GalleryComponent from "../components/Gallery";
 

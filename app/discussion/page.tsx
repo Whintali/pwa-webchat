@@ -1,7 +1,6 @@
 'use client'
 import { useRouter } from "next/navigation";
-import ChatComponent from "../components/Chat";
-import { use, useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 
 export default function DiscussionPage(){

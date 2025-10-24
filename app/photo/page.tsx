@@ -1,7 +1,4 @@
 'use client'
-import Swal from "sweetalert2";
-import Camera from "../components/Camera";  
-import Gallery from "../components/Gallery";
 import { useState, useEffect } from "react";
 import CameraComponent from "../components/Camera";
 import GalleryComponent from "../components/Gallery";

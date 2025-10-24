@@ -1,7 +1,7 @@
 'use client';
-import { use, useEffect } from "react"
+import { useEffect } from "react"
 
-export default function roomIdPage(){
+export default function RoomIdPage(){
     useEffect(()=>{
         console.log("Discussion Room Page Loaded");
     },[])   

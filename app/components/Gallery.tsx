@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 export default function GalleryComponent(props) {
     if(!props) return null;
     const type = props.type
-    let finalContent = null;
     const [images,setImages] = useState<string[]>([]);
     props.functionManager.reloadImages = () => {
         const photosNotConverted = window.localStorage.getItem(type);

@@ -1,9 +1,9 @@
-import { useRef, useEffect, useState, use } from "react";
+import { useRef, useEffect} from "react";
 import Swal from "sweetalert2";
 export default function CameraComponent(props) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const type = props.type || "screenshot";
-    let takePhoto = () => {if (videoRef.current) {
+    const takePhoto = () => {if (videoRef.current) {
                 const canvas = document.createElement("canvas");
                 canvas.width = videoRef.current.videoWidth;
                 canvas.height = videoRef.current.videoHeight;
