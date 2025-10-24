@@ -1,9 +1,8 @@
-import {use, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import Swal from "sweetalert2";
 
 
 export default function GalleryComponent(props) {
-    if(!props) return null;
     const type = props.type
     const [images,setImages] = useState<string[]>([]);
     props.functionManager.reloadImages = () => {
