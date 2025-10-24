@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
-
+import socket from "../../socket-client";
 
 export default function DiscussionPage(){
     const router = useRouter();
@@ -11,7 +11,8 @@ export default function DiscussionPage(){
         name: "Room 2",
     }])
     const [selectedRoom,setSelectedRoom] = useState({name:""});
-    useEffect(()=>{}
+    useEffect(()=>{
+    }
     ,[])
     useEffect(()=>{
         if(JSON.stringify(selectedRoom) === "{name:\"\"}" || !selectedRoom.name) return
