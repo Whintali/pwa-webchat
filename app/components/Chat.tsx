@@ -11,6 +11,22 @@ type Message = {
     timestamp: Date;
 }
 
+type SocketMessageData = {
+    id?: string;
+    username?: string;
+    sender?: string;
+    userId?: string;
+    senderId?: string;
+    message?: string;
+    content?: string;
+    timestamp?: string;
+}
+
+type RoomInfoData = {
+    participants?: number;
+    messages?: Message[];
+}
+
 type ChatProps = {
     room: string;
 }
@@ -63,7 +79,7 @@ export default function ChatComponent({ room }: ChatProps) {
             setIsConnected(false);
         };
 
-        const onMessage = (data: any) => {
+        const onMessage = (data: SocketMessageData) => {
             console.log("Message reçu:", data);
             
             if (data.userId === userId) return;
@@ -72,13 +88,13 @@ export default function ChatComponent({ room }: ChatProps) {
                 id: data.id || crypto.randomUUID(),
                 sender: data.username || data.sender || "Inconnu",
                 senderId: data.userId || data.senderId || "",
-                content: data.message || data.content,
+                content: data.message || data.content || "",
                 timestamp: new Date(data.timestamp || Date.now()),
             };
             setMessages(prev => [...prev, newMessage]);
         };
 
-        const onRoomInfo = (data: any) => {
+        const onRoomInfo = (data: RoomInfoData) => {
             console.log("Info room:", data);
             if (data.participants) {
                 setParticipants(data.participants);
