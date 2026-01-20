@@ -3,9 +3,7 @@ import { cpSync } from "fs";
 import { useRef, useEffect} from "react";
 import Swal from "sweetalert2";
 export default function MapComponent(props:Props) {
-    const map = useRef<google.maps.Map>(null); 
-    console.log("MAP RENDER", process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY);
-
+    const map = useRef<google.maps.Map>(null);
     useEffect(() => {
         if(!props.value || !map.current)return;
         if(map.current && props.value && props.value instanceof GeolocationCoordinates){
