@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import socket from "../../socket-client";
+import { fetchRooms } from "../services/SocketIOService";
 
 type room = {
     name: string;
@@ -37,33 +38,11 @@ export default function DiscussionPage(){
 
     <div className="ml-5 w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
       {rooms.map((room, index) => (
-        <div
-          key={index}
-          className="bg-gray-200 rounded-lg aspect-square shadow hover:scale-105 hover:shadow-lg transition-transform flex flex-col items-center justify-center"
-            onClick={() => setSelectedRoom(room)}
-        >
-          <div className="w-full text-center p-2 text-gray-700 font-medium bg-white rounded-b-lg">
+          <div key={index} className="w-full bg-gray-300 text-center p-2 text-gray-700 font-medium   rounded-b-lg" onClick={() => setSelectedRoom(room)}>
             {room}
           </div>
-        </div>
       ))}
     </div>
   </div>)
 } 
 
-async function fetchRooms() {
-  try{
-  const response = await fetch(`https://api.tools.gavago.fr/socketio/api/rooms`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const resultData = await response.json();
-  console.log(resultData);
-  return resultData;
-  } catch (error) {
-    console.error("Error fetching rooms:", error);
-    return {data:{}};
-  }
-}

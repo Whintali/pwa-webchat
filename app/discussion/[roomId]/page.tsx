@@ -1,11 +1,10 @@
 'use client';
 import ChatComponent from "@/app/components/Chat";
 import { useEffect } from "react"
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
+
 
 export default function RoomIdPage(){
-    const params = useParams();
-    const roomId = params.roomid as string; // le nom doit correspondre au dossier [roomid]
     useEffect(()=>{
         console.log("Discussion Room Page Loaded");
     },[])
@@ -15,7 +14,7 @@ export default function RoomIdPage(){
                 Discussion Room
             </h1>
             <p className="text-gray-600">This is the discussion room page.</p>
-            <ChatComponent room={roomId}/>
+            <ChatComponent/>
         </div>
     )
 }
