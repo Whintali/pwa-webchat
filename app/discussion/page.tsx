@@ -23,7 +23,7 @@ export default function DiscussionPage(){
     ,[])
     useEffect(()=>{
         if(!selectedRoom) return
-        router.push(`/discussion/${selectedRoom.toLowerCase().replace(" ","-")}`);
+        router.push(`/discussion/${selectedRoom.replace(" ","-")}`);
     },[selectedRoom])
     
     return (
