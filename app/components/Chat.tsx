@@ -2,7 +2,9 @@
 import { useEffect, useState,useRef, use } from "react";
 import { useParams, useRouter } from "next/navigation";
 import socket from "../../socket-client";
+import { postImageMessage,getImageMessage } from "../services/SocketIOService";
 import { json } from "stream/consumers";
+import { get } from "http";
 
 type Message = {
     sender: string;
@@ -47,14 +49,31 @@ export default function ChatComponent(props:Props) {
       socket.on("chat-msg", (msg) => {
         msg.dateEmis = new Date(msg.dateEmis);
         console.log("4", JSON.stringify(msg));
-
-        setMessages(prev => [...prev, {
+        if(msg.categorie === "NEW_IMAGE"){
+          getImageMessage(msg.id_image).then((data_image)=>{
+            const content = msg.content.slice(0,-1).split(" ")
+            setMessages(prev => [...prev, {
+              sender: content[content.length - 1],
+              content: msg.content,
+              dateSent: msg.dateEmis,
+              category: "IMAGE",
+              image: data_image || ""
+            }]); 
+            const storedImagesNotConverted = window.localStorage.getItem("chat-images");
+            const storedImages = (storedImagesNotConverted) ? JSON.parse(storedImagesNotConverted as string) : [];
+            storedImages.push(data_image);
+            localStorage.setItem("chat-images", JSON.stringify(storedImages));
+            props.functionManager?.reloadImages?.();
+          });
+        }
+        else {setMessages(prev => [...prev, {
           sender: msg.pseudo,
           content: msg.content,
           dateSent: msg.dateEmis,
           category: msg.categorie
-        }]);
+        }]);}
       });
+      /*
       socket.on("image-sended", (msg) => {
         msg.dateEmis = new Date(msg.dateEmis);
         console.log("Image reçue: ", JSON.stringify(msg));
@@ -70,7 +89,8 @@ export default function ChatComponent(props:Props) {
         storedImages.push(msg.image);
         localStorage.setItem("chat-images", JSON.stringify(storedImages));
         props.functionManager?.reloadImages?.();
-      });     
+      });   
+      */  
     }
     const retrieveUserId = (username:string) => {
       socket.on("chat-joined-room", (data) => {
@@ -91,7 +111,34 @@ export default function ChatComponent(props:Props) {
     }
     const sendImage = (file: File) => {
         const reader = new FileReader();
-        reader.onload = () => { socket.emit("image-send", { image : reader.result,categorie: "IMAGE",roomName: roomId});
+        reader.onload = () => { 
+          const img = new Image();
+          img.onload = () => {
+            const MAX_WIDTH = 800;
+            const MAX_HEIGHT = 800;
+            let width = img.width;
+            let height = img.height;
+            const quality = 0.5; 
+            if (width > height) {
+              if (width > MAX_WIDTH) {
+                height = Math.round((height *= MAX_WIDTH / width));
+                width = MAX_WIDTH;
+              }
+            } else {
+              if (height > MAX_HEIGHT) {
+                width = Math.round((width *= MAX_HEIGHT / height));
+                height = MAX_HEIGHT;
+              }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d")!;
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+          postImageMessage(compressedBase64,roomId as string);
+        }
+      }
+          img.src = reader.result as string;
         };
         reader.readAsDataURL(file);
     };

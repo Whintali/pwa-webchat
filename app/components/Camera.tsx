@@ -13,10 +13,11 @@ export default function CameraComponent(props:Props) {
                 if(context){
                     context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
                     const data = canvas.toDataURL("image/jpeg",0.5);
-                    const stockImageTabNotConverted = window.localStorage.getItem("photos");
+                    const typeImages = (props.value && typeof props.value === "string")? props.value : "photos";
+                    const stockImageTabNotConverted = window.localStorage.getItem(typeImages);
                     const stockImageTabConverted = stockImageTabNotConverted ? JSON.parse(stockImageTabNotConverted) : [];
                     stockImageTabConverted.push(data);
-                    window.localStorage.setItem("photos", JSON.stringify(stockImageTabConverted));
+                    window.localStorage.setItem(typeImages, JSON.stringify(stockImageTabConverted));
                     Swal.fire({
                         title: 'Photo prise !',     
                         text: 'La photo a été prise avec succès.',
