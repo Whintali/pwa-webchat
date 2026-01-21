@@ -21,7 +21,10 @@ import Swal from "sweetalert2";
     return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="text-2xl font-bold text-black">PWA App</div>
+        
+        <div className="text-2xl font-bold text-black"><Link href="/" className="text-gray-700 hover:text-indigo-600">
+            PWA App
+          </Link></div>
 
         <div className="flex space-x-6">
           <Link href="/account" className="text-gray-700 hover:text-indigo-600">

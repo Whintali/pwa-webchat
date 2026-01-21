@@ -35,34 +35,32 @@ export default function CameraComponent(props:Props) {
         }
     useEffect(() => {
         let stream:MediaStream | undefined = undefined;
-        try{
+        
+        const startCamera = () => {
+            try {
                 navigator.mediaDevices.getUserMedia({video: true, audio: false}).then((mediaStream) => {
-                    stream = mediaStream;
-                    if(stream) { 
-                        setHasAuthorization(true); 
-                        startCamera();
-                    }
-                }).catch((err) => {
-                    console.error("Erreur d'accès à la caméra : ", err);
-                });
-                const startCamera = () => {
-                    if (videoRef.current && stream) {
-                        videoRef.current.srcObject = stream;
-                    }
+                stream = mediaStream;
+                setHasAuthorization(true);
+
+                if (videoRef.current && stream) {
+                    setHasAuthorization(true);
+                    videoRef.current.srcObject = stream;
                 }
-            }
+            });}
             catch(err){
                 console.error("Erreur lors de la tentative d'accès à la caméra : ", err);
             }
-                return () => {
-                    if(stream && stream.active){
-                        stream.getTracks().forEach(track => track.stop());
-                        stream = undefined;
-                    }
-                    if(videoRef.current){
-                        videoRef.current.srcObject = null;
-                    }
-                }
+        }
+        startCamera();
+        return () => {
+            if(stream && stream.active){
+                stream.getTracks().forEach(track => track.stop());
+                stream = undefined;
+            }
+            if(videoRef.current){
+                videoRef.current.srcObject = null;
+            }
+        }
     }, []);   
     return ( 
         <div className="w-full sm:w-3/4 lg:w-2/3 aspect-video rounded-lg shadow-lg overflow-hidden relative">
