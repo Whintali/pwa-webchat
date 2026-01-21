@@ -19,15 +19,19 @@ export default function Page() {
     };
     
     return (
-    <div className="mt-5 flex flex-col items-center p-4 space-y-6 w-3/4 mx-auto">
-        <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-semibold">
-                Page de prise de photos !
-            </h1>
-        </div>
-        <CameraComponent functionManager={functionManager}></CameraComponent>
-        <h2>Choisir votre image personnelle :</h2>
-        <GalleryComponent type="photos" images={images} functionManager={functionManager}></GalleryComponent>
+    <div className="min-h-screen bg-slate-950 pt-24 pb-16 px-6">
+  <div className="max-w-4xl mx-auto">
+    <h1 className="text-3xl font-bold text-center bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent mb-8">
+      Prise de photos
+    </h1>
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-10">
+      <CameraComponent functionManager={functionManager}></CameraComponent>
     </div>
+    <h2 className="text-xl font-semibold text-white mb-4">Choisir votre image personnelle :</h2>
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+      <GalleryComponent type="photos" images={images} functionManager={functionManager}></GalleryComponent>
+    </div>
+  </div>
+</div>
     )
 }

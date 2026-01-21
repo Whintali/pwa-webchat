@@ -49,17 +49,16 @@ export default function GalleryComponent(props:Props) {
 
     return (
         <div>
-            { images.length > 0 &&
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={()=>{ clearImages() }}> Clear Images</button>
-            }
-            <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {   
-                    images.map((image,index)=>
-                    <div key={index} className="bg-gray-200 rounded-lg aspect-square shadow hover:scale-105 hover:shadow-lg transition-transform"><img onClick={() => onClick(index)} src={image}></img></div>
-                )
-            }
-            </div>
-            
-        </div>
+  {images.length > 0 &&
+    <button className="mb-4 px-4 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 transition-all" onClick={() => clearImages()}>Clear Images</button>
+  }
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    {images.map((image, index) =>
+      <div key={index} className="aspect-square rounded-xl overflow-hidden bg-white/5 border border-white/10 hover:border-violet-500/30 hover:scale-[1.02] transition-all cursor-pointer">
+        <img onClick={() => onClick(index)} src={image} className="w-full h-full object-cover"/>
+      </div>
+    )}
+  </div>
+</div>
         );
 }

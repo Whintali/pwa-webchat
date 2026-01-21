@@ -63,16 +63,18 @@ export default function CameraComponent(props:Props) {
         }
     }, []);   
     return ( 
-        <div className="w-full sm:w-3/4 lg:w-2/3 aspect-video rounded-lg shadow-lg overflow-hidden relative">
-            {hasAutorization &&
-                <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted></video>}
-            {!hasAutorization &&
-                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <p className="text-gray-500">Autorisation de la caméra refusée.</p>
-                </div>}   
-            {type == "screenshot" && <button disabled={!hasAutorization} className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={() => takePhoto()}>Prendre une photo</button>}
-        
-        </div>    
+        <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-slate-900">
+  {hasAutorization &&
+    <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted></video>}
+  {!hasAutorization &&
+    <div className="w-full h-full flex items-center justify-center">
+      <p className="text-slate-500">Autorisation de la caméra refusée.</p>
+    </div>}
+  {type == "screenshot" && 
+    <button disabled={!hasAutorization} className="absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 transition-all" onClick={() => takePhoto()}>
+      Prendre une photo
+    </button>}
+</div>
     )
 }
       

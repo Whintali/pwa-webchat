@@ -175,87 +175,64 @@ export default function ChatComponent(props:Props) {
     }, []);
     useEffect(() => {messageDivRef.current?.scrollIntoView({behavior: 'auto'})}, [messages]);
    return (
-  <div className="flex flex-col h-full max-h-screen w-full bg-gray-100">
-    {/* Header */}
-    <div className="bg-indigo-600 text-white px-4 py-3 flex items-center justify-between">
-      <h2 className="text-lg font-semibold"></h2>
-      <span className="text-sm opacity-80">5 participants</span>
-    </div>
-
-    {/* Messages */}
-    <div className="flex-1 overflow-y-auto p-4 space-y-3">
-      {messages.length !== 0 && messages.map((message, index) => (
-        <div key={index}>
-          {message.sender === username.current ? (
-              // Message envoyé par moi
-              <div className="flex items-start justify-end space-x-3">
-                  <div className="bg-indigo-500 text-white p-3 rounded-xl shadow max-w-xs">
-                      {message.category === "IMAGE" ? (
-                          <img src={message.image} alt="Image" className="max-w-full rounded-lg" />
-                      ) : (
-                          <p className="text-sm">{message.content}</p>
-                      )}
-                      <span className="text-xs opacity-70 font-semibold">{message.sender} </span>
-                      <span className="text-xs opacity-70">{message.dateSent.toLocaleTimeString()}</span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-indigo-400 flex-shrink-0"></div>
-              </div>
-          ) : message.category === "IMAGE" ? (
-              // Image reçue d'un autre utilisateur
-              <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-400 flex-shrink-0"></div>
-                  <div className="bg-white p-3 rounded-xl shadow max-w-xs">
-                      <img src={message.image} alt="Image" className="max-w-full rounded-lg" />
-                      <span className="text-xs text-indigo-600 font-semibold">{message.sender} </span>
-                      <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
-                  </div>
-              </div>
-          ) : message.category === "INFO" || message.category === "NEW_IMAGE" ? (
-              // Système, notification, etc.
-              <div className="flex justify-center">
-                  <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm italic">
-                      {message.content}
-                  </div>
-              </div>
-          ) : (
-              // Message reçu d'un autre utilisateur
-              <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-400 flex-shrink-0"></div>
-                  <div className="bg-white p-3 rounded-xl shadow max-w-xs">
-                      <p className="text-sm text-gray-800">{message.content}</p>
-                      <span className="text-xs text-indigo-600 font-semibold">{message.sender} </span>
-                      <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
-                  </div>
-              </div>
-          )}
-        </div>
-      ))}
-      <div ref={messageDivRef}></div>
-    </div>
-
-    <div className="flex items-center p-3 border-t border-gray-300 bg-white">
-      <input
-        ref={inputRef}
-        onKeyUp={(e)=> {if(inputRef.current?.value != null && e.key === "Enter"){ sendMessage(inputRef.current?.value); inputRef.current.value="";}}}
-        type="text"
-        placeholder="Type a message..."
-        className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-      />
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-      />
-
-      <button onClick={() => fileInputRef.current?.click()} className="ml-3 bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700"> 
-        Image
-      </button>
-      <button onClick={()=> {if(inputRef.current?.value != null){ sendMessage(inputRef.current?.value); inputRef.current.value = "";}}} className="ml-3 bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700">
-        Envoyer
-      </button>
-    </div>
+  <div className="flex flex-col h-[600px] w-full bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden">
+  {/* Header */}
+  <div className="px-6 py-4 bg-violet-600/10 border-b border-white/10 flex items-center justify-between">
+    <h2 className="text-lg font-semibold text-white">Discussion</h2>
+    <span className="text-sm text-slate-400">5 participants</span>
   </div>
-);
+
+  {/* Messages */}
+  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    {messages.map((message, index) => (
+      <div key={index}>
+        {message.sender === username.current ? (
+          <div className="flex items-end justify-end gap-3">
+            <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white p-4 rounded-2xl rounded-br-md max-w-xs">
+              {message.category === "IMAGE" ? (
+                <img src={message.image} alt="Image" className="rounded-lg" />
+              ) : (
+                <p className="text-sm">{message.content}</p>
+              )}
+              <div className="text-xs opacity-70 mt-1">{message.sender} · {message.dateSent.toLocaleTimeString()}</div>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex-shrink-0"></div>
+          </div>
+        ) : message.category === "INFO" || message.category === "NEW_IMAGE" ? (
+          <div className="flex justify-center">
+            <div className="px-4 py-2 rounded-full bg-white/5 text-sm text-slate-400 italic">{message.content}</div>
+          </div>
+        ) : (
+          <div className="flex items-end gap-3">
+            <div className="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0"></div>
+            <div className="bg-white/10 p-4 rounded-2xl rounded-bl-md max-w-xs border border-white/10">
+              {message.category === "IMAGE" ? (
+                <img src={message.image} alt="Image" className="rounded-lg" />
+              ) : (
+                <p className="text-sm text-slate-200">{message.content}</p>
+              )}
+              <div className="text-xs text-slate-500 mt-1"><span className="text-violet-400">{message.sender}</span> · {message.dateSent.toLocaleTimeString()}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    ))}
+    <div ref={messageDivRef}></div>
+  </div>
+
+  {/* Input */}
+  <div className="p-4 border-t border-white/10 flex items-center gap-3">
+    <input
+      ref={inputRef}
+      onKeyUp={(e) => { if(inputRef.current?.value && e.key === "Enter"){ sendMessage(inputRef.current.value); inputRef.current.value=""; }}}
+      type="text"
+      placeholder="Écrivez un message..."
+      className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-violet-500/50 transition-all"
+    />
+    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+    <button onClick={() => fileInputRef.current?.click()} className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-all">Image</button>
+    <button onClick={() => { if(inputRef.current?.value){ sendMessage(inputRef.current.value); inputRef.current.value = ""; }}} className="px-6 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg hover:shadow-violet-500/25 transition-all">Envoyer</button>
+  </div>
+</div>
+   )
 }

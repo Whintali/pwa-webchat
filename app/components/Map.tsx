@@ -17,8 +17,9 @@ export default function MapComponent(props:Props) {
     }, [props.value,map]);
 
     return ( 
-        <div className="w-50 sm:w-3/4 lg:w-2/3 aspect-video rounded-lg shadow-lg overflow-hidden relative">
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || ""}>
+        <div className="w-full aspect-video rounded-xl overflow-hidden">
+  {/* ... APIProvider et Map restent identiques */}
+<APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY || ""}>
             <Map
                 style={{width: '100%', height: '100%'}}
                 defaultCenter={{lat: 22.54992, lng: 0}}
