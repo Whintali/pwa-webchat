@@ -1,6 +1,8 @@
-import { useRef, useEffect} from "react";
+import { useRef, useEffect, useState} from "react";
+import { start } from "repl";
 import Swal from "sweetalert2";
 export default function CameraComponent(props:Props) {
+    const [hasAutorization, setHasAuthorization] = useState<boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null);
     const type = props.type || "screenshot";
     const takePhoto = () => {if (videoRef.current) {
@@ -27,18 +29,46 @@ export default function CameraComponent(props:Props) {
             }
         }
     useEffect(() => {
-        const startCamera = async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
+        let stream:MediaStream | undefined = undefined;
+        try{
+                navigator.mediaDevices.getUserMedia({video: true, audio: false}).then((mediaStream) => {
+                    stream = mediaStream;
+                    if(stream) { 
+                        setHasAuthorization(true); 
+                        startCamera();
+                    }
+                }).catch((err) => {
+                    console.error("Erreur d'accès à la caméra : ", err);
+                });
+                const startCamera = () => {
+                    if (videoRef.current && stream) {
+                        videoRef.current.srcObject = stream;
+                    }
+                }
             }
-        }
-        startCamera(); 
+            catch(err){
+                console.error("Erreur lors de la tentative d'accès à la caméra : ", err);
+            }
+                return () => {
+                    if(stream && stream.active){
+                        stream.getTracks().forEach(track => track.stop());
+                        stream = undefined;
+                    }
+                    if(videoRef.current){
+                        videoRef.current.srcObject = null;
+                    }
+                }
     }, []);   
     return ( 
         <div className="w-full sm:w-3/4 lg:w-2/3 aspect-video rounded-lg shadow-lg overflow-hidden relative">
-            <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted></video>    
-            {type == "screenshot" && <button className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={() => takePhoto()}>Prendre une photo</button>}    
+            {hasAutorization &&
+                <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted></video>}
+            {!hasAutorization &&
+                <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <p className="text-gray-500">Autorisation de la caméra refusée.</p>
+                </div>}   
+            {type == "screenshot" && <button disabled={!hasAutorization} className="absolute bottom-4 left-1/2 transform -translate-x-1/2 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={() => takePhoto()}>Prendre une photo</button>}
+        
         </div>    
     )
 }

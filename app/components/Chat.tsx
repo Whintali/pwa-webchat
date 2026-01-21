@@ -1,25 +1,21 @@
 'use client';
 import { useEffect, useState,useRef, use } from "react";
 import { useParams, useRouter } from "next/navigation";
-import{ io } from "socket.io-client";
 import socket from "../../socket-client";
-import { Socket } from "socket.io";
-import { join } from "path";
-import { on } from "events";
-import { m } from "framer-motion";
-import { input } from "@heroui/react";
+import { json } from "stream/consumers";
 
 type Message = {
     sender: string;
-    content: string;
+    content?: string;
     dateSent: Date;
     category: string;
+    image?: string;
 }
 
 
 // Gérer la gestion du chat
 // Message trié selon l'utilisateur (moi / autre) via id utilisateur (objet [id] : {username:"",room:""})
-export default function ChatComponent(){
+export default function ChatComponent(props:Props) {
     const router = useRouter();
     const {roomId} = useParams();
     const [messages,setMessages] = useState<Message[]>([]);
@@ -27,7 +23,13 @@ export default function ChatComponent(){
     const inputRef = useRef<HTMLInputElement>(null);
     const username = useRef<string>("");
     const messageDivRef = useRef<HTMLDivElement>(null);
-
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (file) {
+        sendImage(file);
+      }
+    }
     if (!roomId && roomId ==="") {
       router.push("/discussion/");
     }
@@ -52,6 +54,22 @@ export default function ChatComponent(){
           dateSent: msg.dateEmis,
           category: msg.categorie
         }]);
+      });
+      socket.on("image-sended", (msg) => {
+        msg.dateEmis = new Date(msg.dateEmis);
+        console.log("Image reçue: ", JSON.stringify(msg));
+        setMessages(prev => [...prev, {
+          sender: msg.pseudo,
+          content: msg.content,
+          dateSent: msg.dateEmis,
+          category: msg.categorie,
+          image: msg.image
+        }]);
+        const storedImagesNotConverted = window.localStorage.getItem("chat-images");
+        const storedImages = (storedImagesNotConverted) ? JSON.parse(storedImagesNotConverted as string) : [];
+        storedImages.push(msg.image);
+        localStorage.setItem("chat-images", JSON.stringify(storedImages));
+        props.functionManager?.reloadImages?.();
       });     
     }
     const retrieveUserId = (username:string) => {
@@ -71,6 +89,12 @@ export default function ChatComponent(){
     const sendMessage = (messageContent:string) => {
       socket.emit("chat-msg", { content : messageContent,roomName:roomId,});
     }
+    const sendImage = (file: File) => {
+        const reader = new FileReader();
+        reader.onload = () => { socket.emit("image-send", { image : reader.result,categorie: "IMAGE",roomName: roomId});
+        };
+        reader.readAsDataURL(file);
+    };
     useEffect(() => {
       username.current = window.localStorage.getItem("name") || "Anonyme";
       console.log("ChatComponent mounted for room: ", roomId);
@@ -85,7 +109,7 @@ export default function ChatComponent(){
       receiveAllMessage();
       retrieveUserId(username.current);
       socket.on("connect_error", (error) => {
-        console.error("❌ Erreur de connexion:", error.message);
+        console.error("Erreur de connexion:", error.message);
       });   
       
       return () => {
@@ -110,33 +134,47 @@ export default function ChatComponent(){
     <div className="flex-1 overflow-y-auto p-4 space-y-3">
       {messages.length !== 0 && messages.map((message, index) => (
         <div key={index}>
-          {message.sender === username.current ? ( // userIdRef.current si sender = userId
-            // Message envoyé par moi
-            <div className="flex items-start justify-end space-x-3">
-              <div className="bg-indigo-500 text-white p-3 rounded-xl shadow max-w-xs">
-                <p className="text-sm">{message.content}</p>
-                <span className="text-xs opacity-70 font-semibold">{message.sender} </span>
-                <span className="text-xs opacity-70">{message.dateSent.toLocaleTimeString()}</span>
+          {message.sender === username.current ? (
+              // Message envoyé par moi
+              <div className="flex items-start justify-end space-x-3">
+                  <div className="bg-indigo-500 text-white p-3 rounded-xl shadow max-w-xs">
+                      {message.category === "IMAGE" ? (
+                          <img src={message.image} alt="Image" className="max-w-full rounded-lg" />
+                      ) : (
+                          <p className="text-sm">{message.content}</p>
+                      )}
+                      <span className="text-xs opacity-70 font-semibold">{message.sender} </span>
+                      <span className="text-xs opacity-70">{message.dateSent.toLocaleTimeString()}</span>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-indigo-400 flex-shrink-0"></div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-indigo-400 flex-shrink-0"></div>
-            </div>
-          ) : message.category === "MESSAGE" ? (
-            // Message reçu d'un autre utilisateur
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 rounded-full bg-gray-400 flex-shrink-0"></div>
-              <div className="bg-white p-3 rounded-xl shadow max-w-xs">
-                <p className="text-sm text-gray-800">{message.content}</p>
-                <span className="text-xs text-indigo-600 font-semibold">{message.sender} </span>
-                <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
+          ) : message.category === "IMAGE" ? (
+              // Image reçue d'un autre utilisateur
+              <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-400 flex-shrink-0"></div>
+                  <div className="bg-white p-3 rounded-xl shadow max-w-xs">
+                      <img src={message.image} alt="Image" className="max-w-full rounded-lg" />
+                      <span className="text-xs text-indigo-600 font-semibold">{message.sender} </span>
+                      <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
+                  </div>
               </div>
-            </div>
+          ) : message.category === "INFO" ? (
+              // Système, notification, etc.
+              <div className="flex justify-center">
+                  <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm italic">
+                      {message.content}
+                  </div>
+              </div>
           ) : (
-            // Autres (système, notification, etc.)
-            <div className="flex justify-center">
-              <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm italic">
-                {message.content}
+              // Message reçu d'un autre utilisateur
+              <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-400 flex-shrink-0"></div>
+                  <div className="bg-white p-3 rounded-xl shadow max-w-xs">
+                      <p className="text-sm text-gray-800">{message.content}</p>
+                      <span className="text-xs text-indigo-600 font-semibold">{message.sender} </span>
+                      <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
+                  </div>
               </div>
-            </div>
           )}
         </div>
       ))}
@@ -151,6 +189,17 @@ export default function ChatComponent(){
         placeholder="Type a message..."
         className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
       />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      <button onClick={() => fileInputRef.current?.click()} className="ml-3 bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700"> 
+        Image
+      </button>
       <button onClick={()=> {if(inputRef.current?.value != null){ sendMessage(inputRef.current?.value); inputRef.current.value = "";}}} className="ml-3 bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700">
         Envoyer
       </button>

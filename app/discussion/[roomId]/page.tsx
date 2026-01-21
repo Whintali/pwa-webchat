@@ -2,9 +2,11 @@
 import ChatComponent from "@/app/components/Chat";
 import { useEffect } from "react"
 import { useParams, usePathname } from "next/navigation";
+import GalleryComponent from "@/app/components/Gallery";
 
 
 export default function RoomIdPage(){
+    const functionManager = {};
     useEffect(()=>{
         console.log("Discussion Room Page Loaded");
     },[])
@@ -14,7 +16,8 @@ export default function RoomIdPage(){
                 Discussion Room
             </h1>
             <p className="text-gray-600">This is the discussion room page.</p>
-            <ChatComponent/>
+            <ChatComponent functionManager={functionManager}/>
+            <GalleryComponent functionManager={functionManager} type="chat-images"/>
         </div>
     )
 }
