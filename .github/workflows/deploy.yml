@@ -16,6 +16,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd /var/www/pwa-webchat
+            git checkout origin/master -- package.json package-lock.json
             git pull origin master --force
             npm install
             npm run build
