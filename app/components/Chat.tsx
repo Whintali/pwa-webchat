@@ -5,6 +5,7 @@ import socket from "../../socket-client";
 import { postImageMessage,getImageMessage } from "../services/SocketIOService";
 import { json } from "stream/consumers";
 import { get } from "http";
+import { sendNotification } from "../services/NotificationService";
 
 type Message = {
     sender: string;
@@ -74,6 +75,7 @@ export default function ChatComponent(props:Props) {
           dateSent: msg.dateEmis,
           category: msg.categorie
         }]);}
+        if(username != msg.pseudo && msg.categorie != "INFO") sendNotification(`Nouveau message reçu de ${msg.pseudo}`);
       });
       /*
       socket.on("image-sended", (msg) => {
@@ -157,8 +159,9 @@ export default function ChatComponent(props:Props) {
       }
       receiveAllMessage();
       retrieveUserId(username.current);
-      socket.on("connect_error", (error) => {
+      socket.on("error", (error) => {
         console.error("Erreur de connexion:", error.message);
+        sendNotification(`Erreur : ${error.message}`);
       });   
       
       return () => {
@@ -166,7 +169,7 @@ export default function ChatComponent(props:Props) {
         socket.off('connect');
         socket.off('chat-msg');
         socket.off('chat-joined-room');
-        socket.off('connect_error');
+        socket.off('error');
         socket.disconnect()
       }
     }, []);

@@ -1,6 +1,8 @@
 import { useRef, useEffect, useState} from "react";
 import { start } from "repl";
 import Swal from "sweetalert2";
+import { sendNotification } from "../services/NotificationService";
+import { sendVibration } from "../services/VibrationService";
 export default function CameraComponent(props:Props) {
     const [hasAutorization, setHasAuthorization] = useState<boolean>(false);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,6 +26,8 @@ export default function CameraComponent(props:Props) {
                         icon: 'success',
                         confirmButtonText: 'OK'
                     });
+                    sendNotification("Photo prise avec succès !");
+                    sendVibration(200);
                     props.functionManager?.reloadImages?.();
                     console.log("Photo prise et ajoutée !");
                 }                

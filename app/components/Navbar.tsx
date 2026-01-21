@@ -2,6 +2,9 @@
 import socket from "@/socket-client";
 import Link from "next/link";
 import {usePathname} from "next/navigation"
+import { use, useEffect } from "react";
+import { requestNotificationPermission } from "../services/NotificationService";
+import Swal from "sweetalert2";
 
     export default function NavBarComponent() {
       const pathname = usePathname();
@@ -10,6 +13,11 @@ import {usePathname} from "next/navigation"
         socket.disconnect();
         console.log("Socket disconnected from Navbar");
       }
+      useEffect(() => {
+          if(!navigator.permissions.query.toString().includes("Notification")){
+            requestNotificationPermission()
+          }
+        }, []);
     return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
