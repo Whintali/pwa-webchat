@@ -158,7 +158,7 @@ export default function ChatComponent(props:Props) {
                       <span className="text-xs text-gray-400">{message.dateSent.toLocaleTimeString()}</span>
                   </div>
               </div>
-          ) : message.category === "INFO" ? (
+          ) : message.category === "INFO" || message.category === "NEW_IMAGE" ? (
               // Système, notification, etc.
               <div className="flex justify-center">
                   <div className="bg-gray-200 text-gray-600 px-4 py-2 rounded-full text-sm italic">
