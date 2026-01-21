@@ -8,7 +8,7 @@ export default function MapComponent(props:Props) {
         if(!props.value || !map.current)return;
         if(map.current && props.value && props.value instanceof GeolocationCoordinates){
             map.current.setCenter({lat: props.value.latitude, lng: props.value.longitude});
-            new google.maps.Marker({
+            new google.maps.Marker({  // Deprecated but the alternative AdvancedMarkerElement depends on a Map Id and I don't want to use it
                 position: {lat: props.value.latitude, lng: props.value.longitude},
                 map: map.current,
                 title: "Vous êtes ici !"
