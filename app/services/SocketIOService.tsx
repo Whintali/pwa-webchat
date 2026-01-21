@@ -52,6 +52,7 @@ async function getImageMessage(imageId: string) {
         },
       }
     );
+    console.log("Response image fetch: ", response);
     if(!response.ok){
       console.error("Error getting image message: ", response.statusText);
       return null;

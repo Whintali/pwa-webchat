@@ -50,7 +50,9 @@ export default function ChatComponent(props:Props) {
         msg.dateEmis = new Date(msg.dateEmis);
         console.log("4", JSON.stringify(msg));
         if(msg.categorie === "NEW_IMAGE"){
+          console.log("Image reçue: ", JSON.stringify(msg.id_image));
           getImageMessage(msg.id_image).then((data_image)=>{
+            console.log("Image data reçue: ", data_image);
             const content = msg.content.slice(0,-1).split(" ")
             setMessages(prev => [...prev, {
               sender: content[content.length - 1],
