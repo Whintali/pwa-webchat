@@ -5,6 +5,7 @@ import {usePathname} from "next/navigation"
 import { use, useEffect } from "react";
 import { requestNotificationPermission } from "../services/NotificationService";
 import Swal from "sweetalert2";
+import BatteryIndicator from "./BatteryIndicator";
 
     export default function NavBarComponent() {
       const pathname = usePathname();
@@ -39,6 +40,7 @@ import Swal from "sweetalert2";
       <Link href="/geolocalise" className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all">
         Geolocalisation
       </Link>
+      <BatteryIndicator/>
     </div>
   </div>
 </nav>

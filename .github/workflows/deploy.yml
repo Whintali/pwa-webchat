@@ -18,6 +18,7 @@ jobs:
             cd /var/www/pwa-webchat
             git checkout origin/master -- package.json package-lock.json
             git pull origin master --force
-            npm install
-            npm run build
-            pm2 restart all
+            docker build -t pwa-webchat:latest .
+            docker stop pwa-webchat || true
+            docker rm pwa-webchat || true
+            docker run -d --name pwa-webchat -p 3000:3000 pwa-webchat:latest
