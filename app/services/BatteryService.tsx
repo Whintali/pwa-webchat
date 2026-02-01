@@ -2,7 +2,7 @@ export async function getBatteryInfo() {
     if (!('getBattery' in navigator)) {
         return null;
     }
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const battery = await (navigator as any).getBattery();
     
     return {
@@ -15,7 +15,7 @@ export async function watchBattery(callback: (info: { level: number; charging: b
     if (!('getBattery' in navigator)) {
         return () => {};
     }
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const battery = await (navigator as any).getBattery();
 
     const update = () => {
