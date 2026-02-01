@@ -1,40 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Prérequis
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
 # PWA APP
 
 Ce projet fût une ouverture à de nouvelles technologies, permettant d'éveiller notre âme de développeur à de nouvelles possibilités
@@ -78,8 +41,6 @@ En contrepartie, Next.js peut être plus complexe à mettre en place pour des pe
 
 Le but de celui-ci était de découvrir les deux technologies détaillées plus haut à savoir la PWA et Next.js, à travers un TP ayant plusieurs étapes à la clés, dès à présent voici les explications pour savoir comment déployer celui-ci
 
-### ÉTAPE 1 Installation du projet
-
 ### Installation de Node.js et npm
 
 Pour commencer, téléchargez et installez Node.js et npm à partir de ce lien https://nodejs.org/en/download (version LTS, c'est la dernière version stable)
@@ -114,4 +75,21 @@ Ainsi ces dépendances seront installées durant le npm install :
 - **@vis.gl/react-google-maps** - Google Maps
 - **tailwindcss** - Framework CSS
 - **typescript** - Typage statique
+- **vitest** - Test unitaire
+- **storybook** - Test composants
+- **playwright** - Test E2E
 
+### Spécificités
+
+Ce projet a été déployé via un conteneur Docker sur un serveur dédié dont l'ip ne sera point montré pour éviter les fuites.
+
+Différentes pages sont trouvables sur ce projet :
+
+- Page Accueil avec présentation des technos utilisés
+- Page Mon compte avec la possibilité de s'inscrire en anonyme ou non avec un aperçu de son image de profil à prendre du côté de la page photos
+- Page Photos permettant de se prendre en photo et de sélectionner sa photo de profil
+- Page Conversation permettant de rejoindre un canal textuel via socket.io
+- Page Géolocalisation qui sert à se Géolocaliser
+- Page Chat servant à discuter (textes, images) avec des gens après avoir choisi sa room via Page Conversation
+
+Sur la Navbar il est censé avoir le niveau de batterie de la personne mais l'api est dépréciée.
