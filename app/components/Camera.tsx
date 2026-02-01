@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState} from "react";
-import { start } from "repl";
 import Swal from "sweetalert2";
 import { sendNotification } from "../services/NotificationService";
 import { sendVibration } from "../services/VibrationService";
@@ -36,21 +35,25 @@ export default function CameraComponent(props:Props) {
     useEffect(() => {
         let stream:MediaStream | undefined = undefined;
         
-        const startCamera = () => {
+        const startCamera = async () => {
             try {
-                navigator.mediaDevices.getUserMedia({video: true, audio: false}).then((mediaStream) => {
+                const mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+                
                 stream = mediaStream;
-                setHasAuthorization(true);
-
-                if (videoRef.current && stream) {
-                    setHasAuthorization(true);
+                
+                if (videoRef.current) {
                     videoRef.current.srcObject = stream;
+                    await videoRef.current.play();
+                    setHasAuthorization(true);
                 }
-            });}
-            catch(err){
-                console.error("Erreur lors de la tentative d'accès à la caméra : ", err);
+            } catch (err) {
+                console.error("Erreur caméra : ", err);
+                setHasAuthorization(false);
             }
-        }
+        };
         startCamera();
         return () => {
             if(stream && stream.active){
@@ -62,19 +65,32 @@ export default function CameraComponent(props:Props) {
             }
         }
     }, []);   
-    return ( 
+    return (
         <div className="w-full aspect-video rounded-xl overflow-hidden relative bg-slate-900">
-  {hasAutorization &&
-    <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted></video>}
-  {!hasAutorization &&
-    <div className="w-full h-full flex items-center justify-center">
-      <p className="text-slate-500">Autorisation de la caméra refusée.</p>
-    </div>}
-  {type == "screenshot" && 
-    <button disabled={!hasAutorization} className="absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 transition-all" onClick={() => takePhoto()}>
-      Prendre une photo
-    </button>}
-</div>
-    )
+            <video
+                ref={videoRef}
+                className={`w-full h-full object-cover ${!hasAutorization ? 'hidden' : ''}`}
+                autoPlay
+                playsInline
+                muted
+            />
+
+            {!hasAutorization && (
+                <div className="w-full h-full flex items-center justify-center">
+                    <p className="text-slate-500">Chargement de la caméra</p>
+                </div>
+            )}
+
+            {type === "screenshot" && (
+                <button
+                    disabled={!hasAutorization}
+                    className="absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-semibold hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 transition-all"
+                    onClick={takePhoto}
+                >
+                    Prendre une photo
+                </button>
+            )}
+        </div>
+    );
 }
       

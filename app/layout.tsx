@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   title: 'PWA Webchat',
   description: 'PWA Webchat Application',
   manifest: '/manifest.json',
-  themeColor: '#000000',
   icons: {
     icon: '/globe.svg',
     apple: '/globe.svg',
@@ -33,13 +32,28 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavBarComponent/>
-          {children}
+        {children}
         
+        {/* Service Worker */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then((reg) => console.log('[SW] Enregistré:', reg.scope))
+                    .catch((err) => console.log('[SW] Erreur:', err));
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
